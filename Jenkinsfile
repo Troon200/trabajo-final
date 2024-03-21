@@ -50,7 +50,7 @@ pipeline {
         stage('OWASP ZAP Scan') {
             steps {
                 script {
-                    sh "docker exec -it zap zap.sh -deamon -quickurl http://172.18.0.5:80 -quickout /tmp/resultados.html"
+                    sh "docker exec -it zap zap.sh -deamon -quickurl http://172.18.0.3:80 -quickout /tmp/resultados.html"
                 }
             }
         }
