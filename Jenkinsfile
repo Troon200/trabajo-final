@@ -11,11 +11,6 @@ pipeline {
                 echo "2"
             }
         }
-        stage('Deploy') {
-            steps {
-                echo "1"
-            }
-        }
         stage('SCM') {
             steps {
                 git branch: 'main', url: 'https://github.com/Troon200/trabajo-final.git'
@@ -31,6 +26,12 @@ pipeline {
                 }
             }
         }
+        stage('OWASP ZAP Scan') {
+            steps {
+                script {
+                    sh "docker exec -it zap zap.sh -deamon -quickurl http://172.18.0.5:80 -quickout /tmp/resultados.html"
+                }
+            }
+        }
     }
 }
-
