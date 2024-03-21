@@ -1,21 +1,20 @@
 pipeline {
     agent any
     stages {
-        stage('Build') {
+        stage('Validar Existencia de index.html') {
             steps {
-                echo "3"
+                script {
+                    git branch: 'main', url: 'https://github.com/Troon200/trabajo-final.git'
+                    def exists = fileExists("index.html")
+                    if (exists) {
+                        echo "El archivo index.html existe en el repositorio."
+                    } else {
+                        error "El archivo index.html no existe en el repositorio."
+                    }
+                }
             }
         }
-        stage('Test') {
-            steps {
-                echo "2"
-            }
-        }
-        stage('SCM') {
-            steps {
-                git branch: 'main', url: 'https://github.com/Troon200/trabajo-final.git'
-            }
-        }
+        
         stage('SonarQube Analysis') {
             steps {
                 script {
@@ -26,6 +25,25 @@ pipeline {
                 }
             }
         }
+        
+        stage('Quality Gate') {
+            steps {
+                script {
+                    sleep time: 100, unit: 'SECONDS'
+                    timeout(time: 1, unit: 'HOURS') {
+                        waitForQualityGate abortPipeline: true
+                    }
+                    echo "El 'Quality Gate' ha sido superado exitosamente."
+                }
+            }
+        }
+        
+        stage('Despliegue Exitoso') {
+            steps {
+                echo "El despliegue fue exitoso."
+            }
+        }
+        
         stage('OWASP ZAP Scan') {
             steps {
                 script {
