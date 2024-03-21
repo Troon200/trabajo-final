@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    environment {
+        PATH = "/usr/local/bin:$PATH"
+    }
     stages {
         stage('Validar Existencia de index.html') {
             steps {
